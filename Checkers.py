@@ -72,6 +72,8 @@ class TreeNode():
         elif piece == 'b':
             opp_piece = 'r'
         new_adj_pos = self.calc_adj_pos(piece, adj_pos[k])
+        if new_adj_pos[k] == None:
+            return (False, None)
         new_targ_piece = self.board[new_adj_pos[k][0]][new_adj_pos[k][1]]
         if (jumped_piece == opp_piece) and new_targ_piece == '-':
             #store as child node
