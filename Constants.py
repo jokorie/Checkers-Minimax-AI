@@ -2,7 +2,7 @@
 empty = [[None, '-', None, '-', None, '-', None, '-'],
          ['-', None, '-', None, '-', None, '-', None],
          [None, '-', None, '-', None, '-', None, '-'],
-         ['-', None, '-', None, 'b', None, '-', None],
+         ['-', None, '-', None, 'B', None, '-', None],
          [None, '-', None, 'R', None, '-', None, '-'],
          ['-', None, '-', None, '-', None, '-', None],
          [None, '-', None, '-', None, '-', None, '-'],

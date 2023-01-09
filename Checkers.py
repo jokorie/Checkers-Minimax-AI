@@ -1,10 +1,11 @@
 import copy
 from Constants import *
+from Evaluation import *
 
 class TreeNode():
-    def __init__(self, board = empty, parent = None, depth = 0, children = []):
+    def __init__(self, board = empty, parent = None, depth = 0, children = [], value = 0):
         self.parent = parent
-        self.value = None
+        self.value = value
         self.depth = depth
         self.children = children
         self.maxTurn = (depth%2 == 0)
@@ -76,7 +77,8 @@ class TreeNode():
             piece = piece.upper()
         new_board[targ_pos_y][targ_pos_x] = piece
         new_board[curr_pos[0]][curr_pos[1]] = '-'
-        child = TreeNode(new_board, self, self.depth + 1)
+        child_val = evaluate(new_board)
+        child = TreeNode(new_board, self, self.depth + 1, value = child_val)
         self.set_children([child])
         return child
     #END OF HELPER FUNCTIONS
@@ -98,7 +100,8 @@ class TreeNode():
             child_board[new_adj_pos[k][0]][new_adj_pos[k][1]] = piece
             child_board[curr_pos[0]][curr_pos[1]] = '-'
             child_board[adj_pos[k][0]][adj_pos[k][1]] = '-'
-            child = TreeNode(child_board, self, self.depth + 1)
+            child_val = evaluate(child_board)
+            child = TreeNode(child_board, self, self.depth + 1, value = child_val)
             return (True, child)
         return (False, None)
 
@@ -142,4 +145,5 @@ if __name__ == '__main__':
     print(len(root.children))
     for child in root.children:
         child.display_board()
+        print('board value =', child.value)
         print('-----Next Board-----')
