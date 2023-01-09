@@ -23,16 +23,6 @@ class TreeNode():
             self.children = childlist[:]
         else:
             self.children += childlist
-
-    def make_child(self, curr_pos, pos):
-        targ_pos_y = pos[0]
-        targ_pos_x = pos[1]
-        new_board = self.get_board()
-        new_board[targ_pos_y][targ_pos_x] = self.board[curr_pos[0]][curr_pos[1]]
-        new_board[curr_pos[0]][curr_pos[1]] = '-'
-        child = TreeNode(new_board, self, self.depth + 1)
-        self.set_children([child])
-        return child
     
     def set_parent(self, parent):
         self.parent = parent
@@ -46,44 +36,69 @@ class TreeNode():
             print(row)
         print('-----Finished Printing-----')
 
+    # def empty_pos(self, pos, board):
+    #     board[pos[0]][pos[1]] = '-'
+
     def calc_adj_pos(self, team, pos):
-        if team == 'r':
+        if team.lower() == 'r':
             delta_y = 1
-        elif team == 'b':
+        elif team.lower() == 'b':
             delta_y = -1
         newpos0 = [pos[0]+delta_y, pos[1]-1]
         newpos1 = [pos[0]+delta_y, pos[1]+1]
         adj_pos = [newpos0, newpos1]
-        for i in range(2):
+        if team == 'R' or team == 'B':
+            newpos3 = [pos[0]-delta_y, pos[1]-1]
+            newpos4 = [pos[0]-delta_y, pos[1]+1]
+            adj_pos = [newpos0, newpos1, newpos3, newpos4]
+        for i in range(len(adj_pos)):
             for j in range(2):
+                if adj_pos[i] == None:
+                    continue
                 if adj_pos[i][j] < 0 or adj_pos[i][j] > 7:
                     adj_pos[i] = None
         return adj_pos
 
-        def empty_pos(self, pos, board):
-            board[pos[0]][pos[1]] = '-'
+    def is_king(self, targ_pos, piece):
+        if piece == 'r' and targ_pos[0] == 7:
+            return True
+        elif piece == 'b' and targ_pos[0] == 0:
+            return True
+        else:
+            return False
+
+    def make_child(self, curr_pos, pos):
+        targ_pos_y = pos[0]
+        targ_pos_x = pos[1]
+        new_board = self.get_board()
+        piece = self.board[curr_pos[0]][curr_pos[1]]
+        if self.is_king((targ_pos_y, targ_pos_x), piece) == True:
+            piece = piece.upper()
+        new_board[targ_pos_y][targ_pos_x] = piece
+        new_board[curr_pos[0]][curr_pos[1]] = '-'
+        child = TreeNode(new_board, self, self.depth + 1)
+        self.set_children([child])
+        return child
     #END OF HELPER FUNCTIONS
 
     def can_jump(self, curr_pos, adj_pos, k, jumped_piece):
         #where k is the direction index
         piece = self.board[curr_pos[0]][curr_pos[1]]
-        if piece == 'r':
+        if piece.lower() == 'r':
             opp_piece = 'b'
-        elif piece == 'b':
+        elif piece.lower() == 'b':
             opp_piece = 'r'
         new_adj_pos = self.calc_adj_pos(piece, adj_pos[k])
         if new_adj_pos[k] == None:
             return (False, None)
         new_targ_piece = self.board[new_adj_pos[k][0]][new_adj_pos[k][1]]
-        if (jumped_piece == opp_piece) and new_targ_piece == '-':
-            #store as child node
+        if (jumped_piece.lower() == opp_piece) and new_targ_piece == '-':
             #make can jump more function
             child_board = self.get_board()
             child_board[new_adj_pos[k][0]][new_adj_pos[k][1]] = piece
             child_board[curr_pos[0]][curr_pos[1]] = '-'
             child_board[adj_pos[k][0]][adj_pos[k][1]] = '-'
             child = TreeNode(child_board, self, self.depth + 1)
-            # child.can_jump(key, 'RIGHT', right_piece)
             return (True, child)
         return (False, None)
 
@@ -93,8 +108,11 @@ class TreeNode():
                 piece = self.board[i][j]
                 if piece == None or piece == '-':
                     continue
+                dir_index = 2
+                if piece == 'B' or piece == 'R':
+                    dir_index = 4
                 adj_pos = self.calc_adj_pos(piece, (i, j))
-                for k in range(2):
+                for k in range(dir_index):
                     if adj_pos[k] == None:
                         continue
                     targ_pos_y = adj_pos[k][0]
@@ -110,7 +128,6 @@ class TreeNode():
                             package[1].set_parent(self)
                             self.set_children([package[1]])
                             # package = package[1].can_jump(piece, adj_pos, k, target_piece)
-                    
 
 
         # def can_jump_more:
