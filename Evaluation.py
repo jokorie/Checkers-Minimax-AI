@@ -1,4 +1,5 @@
-#Board Evaluation File
+import math
+# Board Evaluation File
 # Board (For Reference):
 # board = [[None, 'r', None, 'r', None, 'r', None, 'r'],
 #          ['r', None, 'r', None, 'r', None, 'r', None],
@@ -20,14 +21,20 @@ def evaluate(board):
     '''
     r_pieces = 0
     b_pieces = 0
+    R_pieces = 0
+    B_pieces = 0
     for row in board:
-        r_pieces += row.count('r') + 2*row.count('R')
-        b_pieces += row.count('b') + 2*row.count('B')
-    if r_pieces == 0:
+        r_pieces += row.count('r')
+        R_pieces += row.count('R')
+        b_pieces += row.count('b')
+        B_pieces += row.count('B')
+    red_pieces = r_pieces + 2*R_pieces
+    black_pieces = b_pieces + 2*B_pieces
+    if r_pieces == 0 and R_pieces:
         #print('game over, black team wins')
         return -1000
-    elif b_pieces == 0:
+    elif b_pieces == 0 and B_pieces == 0:
         #print('game over, red team wins')
         return 1000
     else:
-        return ((12-b_pieces)**2 - (12-r_pieces)**2)
+        return ((12-black_pieces)**2 - (12-red_pieces)**2)

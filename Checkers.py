@@ -3,7 +3,7 @@ from Constants import empty, board
 from Evaluation import evaluate
 
 class TreeNode():
-    def __init__(self, board = empty, parent = None, depth = 4, children = [], value = 0, maxTurn = True):
+    def __init__(self, board = board, parent = None, depth = 6, children = [], value = None, maxTurn = True):
         self.board = board
         self.parent = parent
         self.depth = depth
@@ -34,7 +34,7 @@ class TreeNode():
     def display_board(self):
         print('-------Printing Board-------')
         for row in self.board:
-            print(row)
+            print('[%s]' % ', '.join(map(str, row)))
         print('-----Finished Printing-----')
 
     # def empty_pos(self, pos, board):
@@ -55,9 +55,9 @@ class TreeNode():
         newpos4 = [pos[0]+1, pos[1]+1]
         adj_pos = [newpos0, newpos1, newpos3, newpos4]
         if team == 'r':
-            adj_pos[2], adj_pos[3] = None, None
-        elif team == 'b':
             adj_pos[0], adj_pos[1] = None, None
+        elif team == 'b':
+            adj_pos[2], adj_pos[3] = None, None
         for i in range(4):
             for j in range(2):
                 if adj_pos[i] == None:
@@ -79,6 +79,34 @@ class TreeNode():
         child = TreeNode(new_board, self, self.depth - 1, value = child_val, maxTurn = not self.maxTurn)
         self.set_children([child])
         return child
+
+    # def is_a_child(self, pos, targ_pos):
+    #     '''
+    #     takes in a board an 
+    #     '''
+    #     for child in self.get_children():
+    #         new_board = child.get_board()
+    #             if new_board[pos[0]][pos[1]] != piece and new_board[targ_pos[0]][targ_pos[1]] != played_board[targ_pos[0]][targ_pos[1]]:
+    #                 return child
+
+    def choose_dir(self, pos):
+        played_board = self.get_board()[:]
+        piece = played_board[pos[0]][pos[1]]
+        while True:
+            dir_index = int(input('Direction (0-4):\n1       2\n    0    \n3       4\nPress "9" to reselect piece: '))
+            adj_pos = self.calc_adj_pos(piece, [pos[0], pos[1]])
+            if len(self.children) == 0:
+                print('Sorry this piece cannot move. Please chose another piece')
+            if dir_index == 9:
+                break
+            elif dir_index != 0:
+                targ_pos = adj_pos[dir_index-1]
+            for child in self.get_children():
+                new_board = child.get_board()
+                if new_board[pos[0]][pos[1]] != piece and new_board[targ_pos[0]][targ_pos[1]] != played_board[targ_pos[0]][targ_pos[1]]:
+                    return child
+            print('The direction you entered was invalid, please input another direction or try and move with a seperate piece')
+            continue
     #END OF HELPER FUNCTIONS
 
     def can_jump(self, curr_pos, adj_pos, k, jumped_piece):
@@ -99,29 +127,30 @@ class TreeNode():
             child_board[curr_pos[0]][curr_pos[1]] = '-'
             child_board[adj_pos[k][0]][adj_pos[k][1]] = '-'
             child_val = evaluate(child_board)
-            child = TreeNode(child_board, self, self.depth - 1, value = child_val, maxTurn = self.maxTurn)
+            child = TreeNode(child_board, self, self.depth - 1, value = child_val, maxTurn = not self.maxTurn)
             return (True, child, [new_adj_pos[k][0], new_adj_pos[k][1]])
-        return (False, None, None)
-    
-    def can_jump_more(self, piece, curr_pos):
-        if self.maxTurn == self.parent.maxTurn:
+        return (False, None, None)             
 
-            adj_pos = self.calc_adj_pos(piece, curr_pos)
-            for k in range(4):
-                if adj_pos[k] == None:
-                    continue
-                jumped_piece = self.board[adj_pos[k][0]][adj_pos[k][1]]
-                if jumped_piece != '-' and jumped_piece.lower() != piece.lower():
-                    self.make_child(curr_pos, curr_pos)
-                    
-                    package = self.can_jump(self, curr_pos, adj_pos, k, jumped_piece)
-                    if package[0] == True:
-                            child = package[1]
-                            child.set_parent(self)
-                            self.set_children([child])
-                            child.can_jump_more(piece, package[2])
-                    elif package[0] == False:
-                        self.maxTurn = not self.maxTurn
+    def can_jump_more(self, piece, curr_pos):
+        pass
+
+        # adj_pos = self.calc_adj_pos(piece, curr_pos)
+        # self.children = []
+        # self.make_child(curr_pos, curr_pos)
+        # for k in range(4):
+        #     if adj_pos[k] == None:
+        #         continue
+        #     jumped_piece = self.board[adj_pos[k][0]][adj_pos[k][1]]
+        #     if jumped_piece != '-' and jumped_piece.lower() != piece.lower():
+        #         package = self.can_jump(curr_pos, adj_pos, k, jumped_piece)
+        #         if package[0] == True:
+        #             self.maxTurn = self.parent.maxTurn
+        #             child = package[1]
+        #             child.set_parent(self)
+        #             self.set_children([child])
+        #             child.can_jump_more(piece, package[2])
+        #         else:
+        #             child.maxTurn = not child.maxTurn
     
     def generate_child_moves(self, team):
         for i in range(8):
@@ -141,6 +170,7 @@ class TreeNode():
                             continue
                         elif targ_piece == '-':
                             child = self.make_child([i,j], adj_pos[k])
+
                         else:
                             package = self.can_jump([i,j], adj_pos, k, targ_piece)
                             if package[0] == True:
@@ -161,33 +191,40 @@ class TreeNode():
             team = 'b'
         else:
             team = 'r'
-        self.generate_child_moves(team)
+        if len(self.children) == 0:
+            self.generate_child_moves(team)
         while True:
             print('-----please specify the piece you would like to move-----')
             column = int(input('Column (1-8): '))
             row = int(input('Row (1-8): '))
             played_board = self.get_board()[:]
             piece = played_board[row-1][column-1]
-            if piece.lower() != team:
+            if piece == None:
+                print('sorry you selected an invalid square')
+                continue
+            elif piece.lower() != team:
                 print('Sorry, the slot you selected as your character piece is either occupied by an enemy piece, empty or does not exist. Try again')
                 continue
             print('-----Thank you-----')
-            while True:
-                dir_index = int(input('Direction (0-4):\n1       2\n    0    \n3       4\nPress "9" to reselect piece:'))
-                adj_pos = self.calc_adj_pos(piece, [row-1, column-1])
-                if len(self.children) == 0:
-                    print('Sorry this piece cannot move. Please chose another piece')
-                if dir_index == '9':
-                    break
-                if dir_index != 0:
-                    targ_pos = adj_pos[dir_index-1]
-                for child in self.get_children():
-                    new_board = child.get_board()
-                    if new_board[row-1][column-1] != piece and new_board[targ_pos[0]][targ_pos[1]] != played_board[targ_pos[0]][targ_pos[1]]:
-                        return child
-                print('The direction you entered was invalid, please input another direction or try and move with a seperate piece')
+            # while True:
+            #     dir_index = int(input('Direction (0-4):\n1       2\n    0    \n3       4\nPress "9" to reselect piece: '))
+            #     adj_pos = self.calc_adj_pos(piece, [row-1, column-1])
+            #     if len(self.children) == 0:
+            #         print('Sorry this piece cannot move. Please chose another piece')
+            #     if dir_index == '9':
+            #         break
+            #     elif dir_index != 0:
+            #         targ_pos = adj_pos[dir_index-1]
+            #     for child in self.get_children():
+            #         new_board = child.get_board()
+            #         if new_board[row-1][column-1] != piece and new_board[targ_pos[0]][targ_pos[1]] != played_board[targ_pos[0]][targ_pos[1]]:
+            #             return child
+            #     print('The direction you entered was invalid, please input another direction or try and move with a seperate piece')
+            #     continue
+            child = self.choose_dir([row-1, column-1])
+            if child == None:
                 continue
-            continue
+            return child
 
     def select_team(self):
         while True:
@@ -234,6 +271,7 @@ class TreeNode():
         After the turn switches and the user specifies his best move, if the users move was not 
             already predicted by the minimax algorithm then we need to recalculate the ideal route
         '''
+
         while self.value != 1000 and self.value != -1000:
             self.display_board()
             if (aiismax == self.maxTurn):
@@ -241,6 +279,8 @@ class TreeNode():
                 ai_move.play_game(aiismax)
             else:
                 player_move = self.input_board_position(aiismax)
+                player_move.depth = minimax_depth = 6
+                player_move.children = []
                 player_move.play_game(aiismax)
         print('-----Game Over-----')
         self.display_board()
@@ -252,8 +292,8 @@ class TreeNode():
 
     
 if __name__ == '__main__':
-    root = TreeNode()
-    root.display_board()
+    minimax_depth = 6
+    root = TreeNode(board)
     player_team = root.select_team()
     root.play_game((player_team.upper() == "B"))
     # root.generate_child_moves()
