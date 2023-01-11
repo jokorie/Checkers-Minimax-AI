@@ -24,10 +24,10 @@ def evaluate(board):
         r_pieces += row.count('r') + 2*row.count('R')
         b_pieces += row.count('b') + 2*row.count('B')
     if r_pieces == 0:
-        print('game over, black team wins')
+        #print('game over, black team wins')
         return -1000
     elif b_pieces == 0:
-        print('game over, red team wins')
+        #print('game over, red team wins')
         return 1000
     else:
         return ((12-b_pieces)**2 - (12-r_pieces)**2)
