@@ -1,6 +1,6 @@
 # Checkers-Minimax-AI
 # Project Overview
-Uses minimax algorithm to calculate an optimal move for checkers
+Uses minimax algorithm to code an optimal checkers AI
 
 # Motivation
 - Over the winter of 2022 my goal was to learn how to play chess and code a competent chess AI. After surfacing over the minimax algorithm, I thought that I might apply this algorithm on simpler games (tic-tac-toe, checkers) before I advance to a more complex game like chess.
