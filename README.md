@@ -20,3 +20,10 @@ Uses minimax algorithm to code an optimal checkers AI. Game is played in the ter
 - In a deeper, more complex game tree, as the parent node is passed up a value from its child nodes, in turn the parent node becomes the child node for its parent node as it passes up a value. Keep in mind that as the you traverse the tree vertically, the turns switch from minimizing player to maximizing player, or vice versa, which affects which node value gets passed up to the parent. See image below of a simplified tic tac toe minimax diagram.
 
 ![eo3qr44bp1w96a92t8s2](https://user-images.githubusercontent.com/121595907/216156892-1b97cda1-b64d-40b9-9160-c5e9cd0a5fb2.png)
+
+# Mock Game
+![image](https://user-images.githubusercontent.com/121595907/216386322-9b212acd-cffb-40ab-8b9a-021b5732a6cd.png)
+
+![image](https://user-images.githubusercontent.com/121595907/216386419-f65c80c0-d395-49a6-a39f-640ee8564923.png)
+
+
