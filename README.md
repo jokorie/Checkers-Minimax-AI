@@ -4,7 +4,7 @@ Uses minimax algorithm to code an optimal checkers AI. Game is played in the ter
 
 # Motivation
 - Over the winter of 2022 my goal was to learn how to play chess and code a competent chess AI. After surfacing over the minimax algorithm, I thought that I might apply this algorithm on simpler games (tic-tac-toe, checkers) before I advance to a more complex game like chess.
-- Link to Tic-Tac-Toe Repository: 
+- Link to Tic-Tac-Toe Repository: https://github.com/jokorie/Tic-Tac-Toe-AI
 
 # Overview
 - Minimax is a famous decision making algorithm which works with two-player turn-based perfect information games. In a proper implementation, every possible game state is represented as a node in a Tree Data Structure, whereas the root node is the starting game state where all other possible game states are fundamentally derived from. 
