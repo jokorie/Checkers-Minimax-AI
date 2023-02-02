@@ -9,7 +9,6 @@ class TreeNode():
         self.depth = depth
         self.children = children
         self.value = value
-        # self.maxTurn = (depth%2 == 0)
         self.maxTurn = maxTurn
     
     #HELPER FUNCTIONS
@@ -36,9 +35,6 @@ class TreeNode():
         for row in self.board:
             print('[%s]' % ', '.join(map(str, row)))
         print('-----Finished Printing-----')
-
-    # def empty_pos(self, pos, board):
-    #     board[pos[0]][pos[1]] = '-'
 
     def is_king(self, targ_pos, piece):
         if piece == 'r' and targ_pos[0] == 7:
@@ -79,15 +75,6 @@ class TreeNode():
         child = TreeNode(new_board, self, self.depth - 1, value = child_val, maxTurn = not self.maxTurn)
         self.set_children([child])
         return child
-
-    # def is_a_child(self, pos, targ_pos):
-    #     '''
-    #     takes in a board an 
-    #     '''
-    #     for child in self.get_children():
-    #         new_board = child.get_board()
-    #             if new_board[pos[0]][pos[1]] != piece and new_board[targ_pos[0]][targ_pos[1]] != played_board[targ_pos[0]][targ_pos[1]]:
-    #                 return child
 
     def choose_dir(self, pos):
         played_board = self.get_board()[:]
@@ -133,24 +120,6 @@ class TreeNode():
 
     def can_jump_more(self, piece, curr_pos):
         pass
-
-        # adj_pos = self.calc_adj_pos(piece, curr_pos)
-        # self.children = []
-        # self.make_child(curr_pos, curr_pos)
-        # for k in range(4):
-        #     if adj_pos[k] == None:
-        #         continue
-        #     jumped_piece = self.board[adj_pos[k][0]][adj_pos[k][1]]
-        #     if jumped_piece != '-' and jumped_piece.lower() != piece.lower():
-        #         package = self.can_jump(curr_pos, adj_pos, k, jumped_piece)
-        #         if package[0] == True:
-        #             self.maxTurn = self.parent.maxTurn
-        #             child = package[1]
-        #             child.set_parent(self)
-        #             self.set_children([child])
-        #             child.can_jump_more(piece, package[2])
-        #         else:
-        #             child.maxTurn = not child.maxTurn
     
     def generate_child_moves(self, team):
         for i in range(8):
@@ -179,7 +148,6 @@ class TreeNode():
                                 child.set_parent(self)
                                 self.set_children([child])
                                 child.can_jump_more(piece, package[2])
-    # code pasted from previous tic tac toe project
 
     def input_board_position(self, player_ismin):
         '''
@@ -206,21 +174,6 @@ class TreeNode():
                 print('Sorry, the slot you selected as your character piece is either occupied by an enemy piece, empty or does not exist. Try again')
                 continue
             print('-----Thank you-----')
-            # while True:
-            #     dir_index = int(input('Direction (0-4):\n1       2\n    0    \n3       4\nPress "9" to reselect piece: '))
-            #     adj_pos = self.calc_adj_pos(piece, [row-1, column-1])
-            #     if len(self.children) == 0:
-            #         print('Sorry this piece cannot move. Please chose another piece')
-            #     if dir_index == '9':
-            #         break
-            #     elif dir_index != 0:
-            #         targ_pos = adj_pos[dir_index-1]
-            #     for child in self.get_children():
-            #         new_board = child.get_board()
-            #         if new_board[row-1][column-1] != piece and new_board[targ_pos[0]][targ_pos[1]] != played_board[targ_pos[0]][targ_pos[1]]:
-            #             return child
-            #     print('The direction you entered was invalid, please input another direction or try and move with a seperate piece')
-            #     continue
             child = self.choose_dir([row-1, column-1])
             if child == None:
                 continue
@@ -235,11 +188,6 @@ class TreeNode():
         return player_team
 
     def minimax(self):
-        # '''
-        # Applies the minimax algorithm to create a trail of the trail attributes
-        # The optimal child node for the best move is going to have its trail attribute = True
-        # Recursive mutates the trails of the child's children
-        # '''
         if self.depth == 0 or self.value == 1000 or self.value == -1000:
             return self, self.value
         
@@ -296,8 +244,3 @@ if __name__ == '__main__':
     root = TreeNode(board)
     player_team = root.select_team()
     root.play_game((player_team.upper() == "B"))
-    # root.generate_child_moves()
-    # print(len(root.children))
-    # for child in root.children:
-    #     child.display_board()
-    # root.minimax()
