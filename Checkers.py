@@ -189,15 +189,15 @@ class TreeNode():
             print('Please try again and input a valid team ("R" or "B")')
         return player_team
 
-    def minimax(self):
-        if self.depth == 0 or self.value == 1000 or self.value == -1000:
+    def minimax(self, depth = 6):
+        if depth == 0 or self.value == 1000 or self.value == -1000:
             return self, self.value
         
         if self.maxTurn:
             self.generate_child_moves('r')
             max_board_val = None, -10000
             for child in self.get_children():
-                tboard_eval = child.minimax()[1]
+                tboard_eval = child.minimax(depth - 1)[1]
                 if tboard_eval > max_board_val[1]:
                     max_board_val = child, tboard_eval  
             self.value = max_board_val[1]
@@ -207,7 +207,7 @@ class TreeNode():
             self.generate_child_moves('b')
             min_board_val = None, 10000
             for child in self.get_children():
-                tboard_eval = child.minimax()[1]
+                tboard_eval = child.minimax(depth - 1)[1]
                 if tboard_eval < min_board_val[1]:
                     min_board_val = child, tboard_eval
             self.value = min_board_val[1]

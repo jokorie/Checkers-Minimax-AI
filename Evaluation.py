@@ -30,7 +30,7 @@ def evaluate(board):
         B_pieces += row.count('B')
     red_pieces = r_pieces + 2*R_pieces
     black_pieces = b_pieces + 2*B_pieces
-    if r_pieces == 0 and R_pieces:
+    if r_pieces == 0 and R_pieces == 0:
         #print('game over, black team wins')
         return -1000
     elif b_pieces == 0 and B_pieces == 0:
