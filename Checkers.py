@@ -31,9 +31,11 @@ class TreeNode():
         self.board = board   
         
     def display_board(self):
+        #displays the board funny
         print('-------Printing Board-------')
         for row in self.board:
-            print('[%s]' % ', '.join(map(str, row)))
+            # print('[%s]' % ', '.join(map(str, row)))
+            print(row)
         print('-----Finished Printing-----')
 
     def is_king(self, targ_pos, piece):
