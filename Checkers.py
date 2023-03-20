@@ -1,4 +1,3 @@
-import copy
 from Constants import empty, board
 from Evaluation import evaluate
 
@@ -13,7 +12,7 @@ class TreeNode():
     
     #HELPER FUNCTIONS
     def get_board(self):
-        return copy.deepcopy(self.board)
+        return [row[:] for row in self.board]
     
     def get_children(self):
         return self.children[:]
@@ -221,28 +220,43 @@ class TreeNode():
         After the turn switches and the user specifies his best move, if the users move was not 
             already predicted by the minimax algorithm then we need to recalculate the ideal route
         '''
-
+        state = self
         while self.value != 1000 and self.value != -1000:
-            self.display_board()
-            if (aiismax == self.maxTurn):
-                ai_move = self.minimax()[0]
-                ai_move.play_game(aiismax)
+            state.display_board()
+            if (aiismax == state.maxTurn):
+                state = state.minimax()[0]
             else:
-                player_move = self.input_board_position(aiismax)
-                player_move.depth = minimax_depth = 6
-                player_move.children = []
-                player_move.play_game(aiismax)
+                state = state.input_board_position(aiismax)
+                state.depth = minimax_depth = 6
+                state.children = []
+
+                
+        return state.end_game()
+        
+    def end_game(self):
         print('-----Game Over-----')
         self.display_board()
         if self.value == 1000:
             print('Red Team Won!!')
         elif self.value == -1000:
             print('Black Team Won!!')
-        quit()
+        while True:
+            decision = input("Would you like to play again (y/N): ")
+            if decision == 'y':
+                return True
+            elif decision == 'N':
+                return False
+            print('Please input a valid expression')
 
     
 if __name__ == '__main__':
     minimax_depth = 6
     root = TreeNode(board)
-    player_team = root.select_team()
-    root.play_game((player_team.upper() == "B"))
+
+    play = True
+    while True:
+        player_team = root.select_team()
+        play = root.play_game((player_team.upper() == "B"))
+    print('Thank you for playing')
+
+
